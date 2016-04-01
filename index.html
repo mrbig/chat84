@@ -63,7 +63,22 @@
       });
       
       $('form.bottom').submit(function(){
-        socket.emit('chat message', $('#m').val());
+        if (!key || !$('#m').val()) return; // ignore empty values
+
+        var iv = window.crypto.getRandomValues(new Uint8Array(16));
+        
+        window.crypto.subtle.encrypt(
+          { name: "AES-CBC", iv: iv},
+          key,
+          Unibabel.utf8ToBuffer($('#m').val())
+        )
+        .then(function(encrypted) {
+          socket.emit(
+            'chat message',
+            Unibabel.bufferToHex(new Uint8Array(encrypted))
+          );
+        });
+        
         $('#m').val('');
         return false;
       });
