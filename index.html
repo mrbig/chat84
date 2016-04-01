@@ -88,15 +88,23 @@
       });
 
       socket.on('chat message', function(msg){
+        var el = $('<li>').addClass('encrypted').text(msg.msg);
+        $('#messages').append(el);
+        
+        if (!key) return;
+        
         window.crypto.subtle.decrypt(
           { name: "AES-CBC", iv: Unibabel.hexToBuffer(msg.iv)},
           key,
           Unibabel.hexToBuffer(msg.msg)
         )
         .then(function(decrypted) {
-          $('#messages').append($('<li>').text(
+          el.text(
             Unibabel.bufferToUtf8(new Uint8Array(decrypted))
-          ));
+          );
+        })
+        .catch(function(e) {
+          // do nothing
         });
       });
     </script>
