@@ -41,20 +41,20 @@
           ['deriveBits', 'deriveKey'])
         .then(function(key) {
           return window.crypto.subtle.deriveKey(
-          { "name": 'PBKDF2',
-            "salt": saltBuffer,
-            "iterations": 100,
-            "hash": 'SHA-256'
-          },
-          key,
-          // For AES the length required to be 128 or 256 bits (not bytes)
-          { "name": 'AES-CBC', "length": 256 },
-          // Whether or not the key is extractable (less secure) or not (more secure)
-          // when false, the key can only be passed as a web crypto object, not inspected
-          true,
-          // this web crypto object will only be allowed for these functions
-         [ "encrypt", "decrypt" ]
-                                                                            )
+            { "name": 'PBKDF2',
+              "salt": saltBuffer,
+              "iterations": 100,
+              "hash": 'SHA-256'
+            },
+            key,
+            // For AES the length required to be 128 or 256 bits (not bytes)
+            { "name": 'AES-CBC', "length": 256 },
+            // Whether or not the key is extractable (less secure) or not (more secure)
+            // when false, the key can only be passed as a web crypto object, not inspected
+            true,
+            // this web crypto object will only be allowed for these functions
+           [ "encrypt", "decrypt" ]
+         )
         })
         .then(function(newKey) {
           key = newKey
