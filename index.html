@@ -20,7 +20,7 @@
     </form>
     <ul id="messages"></ul>
     <form action="" class="bottom">
-      <input id="m" autocomplete="off" /><button>Send</button>
+      <input id="m" autocomplete="off" disabled="disabled"/><button>Send</button>
     </form>
     <script src="/unibabel-js/index.js"></script>
     <script src="/unibabel-js/unibabel.hex.js"></script>
@@ -57,13 +57,14 @@
          )
         })
         .then(function(newKey) {
-          key = newKey
+          key = newKey;
+          $('#m').removeAttr('disabled').focus();
         });
         return false;
       });
       
       $('form.bottom').submit(function(){
-        if (!key || !$('#m').val()) return; // ignore empty values
+        if (!key || !$('#m').val()) return false; // ignore empty values
 
         var iv = window.crypto.getRandomValues(new Uint8Array(16));
         
