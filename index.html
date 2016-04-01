@@ -75,15 +75,28 @@
         .then(function(encrypted) {
           socket.emit(
             'chat message',
-            Unibabel.bufferToHex(new Uint8Array(encrypted))
+            {
+              iv: Unibabel.bufferToHex(iv),
+              msg: Unibabel.bufferToHex(new Uint8Array(encrypted))
+            }
           );
         });
         
         $('#m').val('');
         return false;
       });
+
       socket.on('chat message', function(msg){
-        $('#messages').append($('<li>').text(msg));
+        window.crypto.subtle.decrypt(
+          { name: "AES-CBC", iv: Unibabel.hexToBuffer(msg.iv)},
+          key,
+          Unibabel.hexToBuffer(msg.msg)
+        )
+        .then(function(decrypted) {
+          $('#messages').append($('<li>').text(
+            Unibabel.bufferToUtf8(new Uint8Array(decrypted))
+          ));
+        });
       });
     </script>
   </body>
